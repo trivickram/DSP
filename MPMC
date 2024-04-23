@@ -154,7 +154,7 @@ END
 
 
 Exp-4(timer and counter)
-
+To generate a sqaure wave form with 250us on time and 50 off time for a crystal frequency of 22MHz
 timer:
 ORG 0000H
 	MOV TMOD,#010H
@@ -176,7 +176,7 @@ ORG 0000H
 	END
   
 
-COUNTER:
+COUNTER:To count external pulse supplied to p3.5 upto the value FF and load the count value in p1
 ORG 0000H
 	MOV TMOD ,#60H
 	MOV TH1,#00H
@@ -246,7 +246,7 @@ END
 
 
 
-exp 6 SERIAL COMMUNICATION :
+exp 6 SERIAL COMMUNICATION :a led is connected to p1.0,check the status of the led.if,its on transmit messege 'led on' and if not transmit messege 'led off'.
 
 ORG 0000H
 MOV TMOD,#20H
@@ -281,7 +281,7 @@ ORG 300H
 
 exp 7 intterupts with lcd
 
-TASK-1:
+TASK-1:To blink led connected to port p1.5 when there is no interrupt and to blink led to p1.0,when there is interrupt p3.2 with edge triggerind
 ORG 0000H
 SJMP 0030H
 ORG 0030H
@@ -309,7 +309,7 @@ RET
 END
 
 
-TASK-2:
+TASK-2:Display messege "Interrupt has occured"when edge triggered occur at int1
 
 ORG 00BH
 SJMP 0050H
@@ -728,3 +728,83 @@ HERE:DJNZ R1,HERE
      RET
      END
 
+Aim: To Display the message when Int 0 , display “doctor is in” and when Int 1 ,display  “ doctor is busy. Occurs in main program “doctor yet to come” should be displayed
+ORG 0000H	;Initialize program memory at address 0000H
+SJMP 0030H	;Jump to the main program
+ORG 0030H	;Main program starts at address 0030H
+CLR P3.5	;Clear port 3.5
+CLR P3.6	;Clear port 3.6
+CLR P3.7	;Clear port 3.6
+MOV P2, #00H	;Initialize port 2
+MOV IE, #10000101B	;Enable interrupts
+SETB TCON.2	;Set Timer 1 overflow flag
+SETB TCON.0	;Set Timer 0 overflow flag
+MOV A, #38H	;Set 8-bit mode for LCD
+ACALL CMD	;Send command to LCD
+ACALL DLAY	;Delay
+MOV A, #OEH	;Turn on cursor display
+ACALL CMD	;Send command to LCD
+ACALL DLAY	;Delay
+MOV A, #01H	;Clear LCD display
+ACALL CMD	;Send command to LCD
+ACALL DLAY	;Delay
+Ag:	MOV A, #080H ;	Set cursor position to 1st line
+ACALL CMD	;Send command to LCD
+ACALL DLAY	;Delay
+MOV DPTR,#M1	;Load address of message M1
+ACALL RTLCD	;Display the message
+ACALL DLAY	;Delay
+ACALL DLAY	;Additional delay
+SJMP Ag	;Repeat the loop
+CMD: CLR P3.7	;Clear port 3.7
+CLR P3.6	;Clear port 3.6
+SETB P3.5	;Set port 3.5
+MOV P2, A	;Send data to LCD
+ACALL DLAY	;Delay
+CLR P3.5	;Clear port 3.5
+RET	;Return from subroutine
+DAT: SETB P3.7	;Set port 3.7
+CLR P3.6	;Clear port 3.6
+SETB P3.5	;Set port 3.5
+MOV P2, A	;Send data to LCD
+ACALL DLAY	;Delay
+CLR P3.5	;Clear port 3.5
+RET	;Return from subroutine
+DLAY: MOV R7, #0FFH	;Initialize R7
+Back: MOV R6, #0CH	;Initialize R6
+Here: DJNZ R6, Here	;Decrement R6 and loop
+DJNZ R7, Back	;Decrement R7 and loop
+  RET	;Return from subroutine
+RTLCD:NOP	;No operation
+L1: CLR A	;Clear accumulator
+MOVC A,@A+DPTR	;Move code memory to accumulator
+JZ OVER	;If zero, jump to OVER
+ACALL DAT	;Send data to LCD
+ACALL DLAY	;Delay
+INC DPTR	;Increment data pointer
+SJMP L1	;Repeat the loop
+OVER:RET	;Return from subroutine
+M1:DB 'Doc. yet to come',0	;Messages
+M2:DB 'Doc.   is   in  ',0	;Messages
+M3:DB 'Doc.   is   busy',0	;Messages
+ORG 0003H	;starting address
+LJMP 0250H	;Long jump to the address 0250H
+ORG 0250H	;Interrupt service routine for address 0250H
+MOV A, #080H	;Set cursor position to 1st line
+LCALL CMD	;Send command to LCD
+LCALL DLAY	;Delay
+MOV DPTR,#M2	;Load address of message M2
+LCALL RTLCD	;Display the message
+LCALL DLAY	;Delay
+RETI	;Return from interrupt
+ORG 0013H	;Starting address
+LJMP 0300H	;Long jump to the address0013H
+ORG 0300H	;Interrupt service routine for address 0300H
+MOV A, #080H	;Set cursor position to 1st line
+LCALL CMD	;Send command to LCD
+LCALL DLAY	;Delay
+MOV DPTR,#M3	;Load address of message M3
+LCALL RTLCD	;Display the message
+LCALL DLAY	;Delay
+RETI	;Return from interrupt
+END	;End of program
