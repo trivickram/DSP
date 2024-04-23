@@ -1,0 +1,730 @@
+EXP-1:
+1. Array of 10 numbers stored in memory location 40h to 49h.Find the average of odd numbers only.
+
+MOV R0,#40H
+MOV R2,#10H
+MOV R3,#00H
+L1:MOV B,@R0
+JNB B.0,EVEN
+ADD A,B
+INC R3
+EVEN:INC R0
+DJNZ R2,L1
+MOV B,R3
+DIV AB
+END
+
+2.FIND THE SMALLEST NUMBER IN THE GIVEN ARRAY 40H TO 49H
+MOV A,40H
+MOV R0,#41H
+MOV R5,#04H
+L2:MOV B,@R0
+CJNE A,B,L1
+SJMP NEXT
+L1:JC NEXT
+XCH A,B
+NEXT:INC R0
+DJNZ R5,L2
+END
+
+
+
+EXP-2 GPA CALCULATOR
+ORG 0000H
+	MOV R2,#10
+	MOV R0,#50H
+	MOV R1,#40H
+	MOV DPTR,#3000H
+	LABEL1:MOV A,@R0
+	MOV B,@R1
+	MUL AB
+	MOVX @DPTR,A
+	ADDC A,R3
+	MOV R3,A
+	MOV A,R4
+	ADDC A,@R1
+	MOV R4,A
+	INC R0
+	INC R1
+	INC DPTR
+	DJNZ R2,LABEL1
+	MOV A,R3
+	MOV B,R4
+	DIV AB
+	END
+
+
+credits in 40h 
+points in 50h (in hex)
+
+
+
+
+exp3.PROGRAMMING IN IO PORTS
+1.To generate a square wave with 75% duty cycle and p1.0
+ORG 0000H
+CLR P1.0
+AGAIN:SETB P1.0
+ACALL DELAY
+ACALL DELAY
+ACALL DELAY
+CLR P1.0
+ACALL DELAY
+SJMP AGAIN
+DELAY: MOV R0,#0FFH
+L2:MOV R1,#0FFH
+L1:DJNZ R1,L1
+DJNZ R0,L2
+RET 
+END
+
+task2  blink led connected at p1 in serial
+
+ORG 0000H
+MOV P1,#00H
+SETB C
+MOV A,#00H
+AGAIN: MOV P1,A
+RLC A
+ACALL DELAY
+SJMP AGAIN
+DELAY: MOV R0,#55H
+L3:MOV R0,#0FFH
+L2: MOV R1,#0FFH
+L1: DJNZ R1,L1
+DJNZ R0,L2
+DJNZ R3,L3
+RET
+END
+
+TASK 3 (blink led in p1 in pattern given)
+ORG 0000H
+MOV P1,#00H
+CLR C
+MOV A,#00H
+AGAIN: CPL C
+MOV P1,A
+RLC A
+ACALL DELAY
+SJMP AGAIN
+DELAY: MOV R3,#0FFH
+L3:MOV R0,#0FFH
+L2: MOV R1,#0FFH
+L1: DJNZ R1,L1
+DJNZ R0,L2
+DJNZ R3,L3
+RET
+END
+ 
+
+TASK 4 (blink led in given order)
+ORG 0000H
+MOV R1,#00H
+AGAIN:MOV P1,#10000001B
+ACALL DELAY
+MOV P1,#01000010B
+ACALL DELAY
+MOV P1,#00100100B
+ACALL DELAY
+MOV P1,#00011000B
+ACALL DELAY
+SJMP AGAIN
+DELAY:
+MOV R0,#0FFH
+L3:MOV R0,#0FFH
+L2:MOV R1,#0FFH
+L1:DJNZ R1,L1
+DJNZ R0,L2
+DJNZ R3,L3
+RET
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Exp-4(timer and counter)
+
+timer:
+ORG 0000H
+	MOV TMOD,#010H
+	AGAIN: MOV TH1,#0FFH
+	MOV TL1,#0A4H
+	CLR P1.0
+	SETB TR1
+	HERE:JNB TF1,HERE
+	CLR TF1
+	CLR TR1
+	MOV TH1,#0FEH
+	MOV TL1,#35H
+	SETB P1.0
+	SETB TR1
+	HERE1:JNB TF1,HERE1
+	CLR TF1
+	CLR TR1
+	SJMP AGAIN
+	END
+  
+
+COUNTER:
+ORG 0000H
+	MOV TMOD ,#60H
+	MOV TH1,#00H
+	
+	AGAIN:CLR P1.0
+	SETB P3.5
+	SETB TR1
+	L1:
+	MOV A,TL1
+	MOV P1,A
+	JNB TF1,L1
+	CLR TF1
+	CLR TR1
+	SJMP AGAIN
+	END
+
+
+
+exp 5 
+task 1: square wave generator
+
+ORG 0000H
+	MOV TMOD,#010H
+AGAIN:MOV TH1,#0FFH
+	MOV TL1,#0A9H
+	SETB P1.0
+	SETB TR1
+HERE: JNB TF1, HERE
+	CLR TF1
+    CLR TR1
+    MOV TH1,#0FEH
+    MOV TL1,#35H
+    CLR P1.0
+    SETB TR1
+HERE1: JNB TF1,HERE1
+    CLR TF1
+    CLR TR1
+    SJMP AGAIN
+    END
+
+task-2:ports
+ORG 0000H
+	AGAIN: MOV P1, #10000001B
+ACALL DELAY
+MOV P1,#00000000B
+ACALL DELAY
+MOV P1,#01000010B
+ACALL DELAY
+MOV P1,#00000000B
+ACALL DELAY
+MOV P1,#00100100B
+ACALL DELAY
+MOV P1,#00000000B
+ACALL DELAY
+MOV P1,#00011000B
+ACALL DELAY
+SJMP AGAIN
+DELAY:MOV R3,#0FFH
+L3:MOV R0,#0FFH
+L2: MOV R1,#0FFH
+L1:DJNZ R1,L1
+DJNZ R0,L2
+DJNZ R3,L3
+RET
+END
+
+
+
+
+exp 6 SERIAL COMMUNICATION :
+
+ORG 0000H
+MOV TMOD,#20H
+MOV TH1,#-12D
+MOV SCON,#50H
+AGAIN:SETB TR1
+      JB P1.0,LEDON
+      MOV DPTR,#MESSAGE2
+   L2:CLR A
+      MOVC A,@A+DPTR 
+      JZ EXIT
+      ACALL SERIAL
+      INC DPTR
+      SJMP L2
+	  CLR TR1
+	  EXIT:SJMP AGAIN
+      LEDON:MOV DPTR,#MESSAGE1
+   L1:CLR A
+      MOVC A,@A+DPTR
+      JZ EXIT
+      ACALL SERIAL
+      INC DPTR
+      SJMP L1
+SERIAL:MOV SBUF,A
+  HERE:JNB TI,HERE
+       CLR TI
+       RET
+ORG 300H
+       MESSAGE1:DB "LEDON",0
+       MESSAGE2:DB"LEDOFF",0 
+		   END  
+
+exp 7 intterupts with lcd
+
+TASK-1:
+ORG 0000H
+SJMP 0030H
+ORG 0030H
+MOV IE,#84H
+SETB TCON.2
+SETB P1.5
+AGAIN:ACALL DELAY
+CPL P1.5
+SJMP AGAIN
+ORG 013H
+SJMP 0050H
+ORG 0050
+SETB P1.0
+ACALL DELAY
+CLR P1.0
+ACALL DELAY
+RETI
+DELAY:MOV R2,#010H
+L3:MOV R0,#0FFH
+L2:MOV R1,#0FFH
+L1:DJNZ R1,L1
+DJNZ R0,L2
+DJNZ R2,L3
+RET
+END
+
+
+TASK-2:
+
+ORG 00BH
+SJMP 0050H
+ORG 0050H
+AGAIN:MOV DPTR,#MYCOM
+BACK:CLR A
+MOVC A,@A+DPTR
+JZ DATAS
+ACALL COMSUB
+ACALL DELAY
+INC DPTR
+SJMP BACK
+DATAS:MOV DPTR,#MYDATA
+BACK1:CLR A
+MOVC A,@A+DPTR
+JZ AGAIN 
+ACALL DATASUB
+ACALL DELAY
+INC DPTR
+SJMP BACK1
+RETI
+COMSUB:CLR P3.7
+CLR P3.6
+RET
+DATASUB:SETB P3.7
+CLR P3.6
+SETB P3.5
+MOV P2,A
+CLR P3.5
+RET
+DELAY:MOV R1,#0FFH
+L1:MOV R0,#0FFH
+HERE:DJNZ R0,HERE
+DJNZ R1,L1
+RET
+ORG 0500H
+MYCOM:DB '38H,01H,0EH,06H,30H,0'
+MYDATA:DB"INTERRUPT HAS OCCUERED",0
+END
+
+
+exp 8 keypad  4x4
+ 
+ORG 0000H                             ; ORIGIN to load program in 0H
+SJMP START                            ;short jump to label start
+
+
+           ORG 0030H             
+           START:MOV P0,#0FFH          ; make P2 an input port
+           ACALL LCD_INITIALIZE          ; call LCD_INITIALIZE  
+           K1:MOV P1,#0                       ; ground all rows at once
+           MOV A,P0                           ; read all keys(ensure open)
+           ANL A,#00001111B               ; mask unused bits
+           CJNE A,#00001111B,K1        ; till all keys release
+         
+
+
+         K2:ACALL DELAY                     ; call 20 msec delay
+           MOV A,P0                                ; see if any key is pressed
+           ANL A,#00001111B                 ; mask unused bits
+           CJNE A,#00001111B,OVER    ; key pressed,find row
+           SJMP K2                                     ; check till key pressed
+          
+
+         OVER:ACALL DELAY                 ; wait 20 msecdebounce time
+           MOV A,P0                                  ; check key closure
+           ANL A,#00001111B                  ; mask unused bits
+           CJNE A,#00001111B,OVER1     ; key pressed,find row
+           SJMP K2                                         ; of none, keep polling
+           
+
+        OVER1:MOV P1,#11111110B     ; ground row 0
+           MOV A,P0                                      ; read all columns
+           ANL A,#00001111B                      ; mask unused bits
+           CJNE A,#00001111B,ROW_0      ; key row 0, find column
+           MOV P1,#11111101B                   ; ground row 1
+        MOV A,P0                                      ; read all columns
+        ANL A,#00001111B                      ; mask unused bits
+        CJNE A,#00001111B,ROW_1      ; key row 1, find column
+           MOV P1,#11111011B                    ; ground row 2
+           MOV A,P0                                        ; read all columns
+           ANL A,#00001111B                        ; mask unused bits
+           CJNE A,#00001111B,ROW_2        ; key row 2, find column
+           MOV P1,#11110111B                    ; ground row 3
+           MOV A,P0                                          ; read all columns
+           ANL A,#00001111B                          ; mask unused bits
+           CJNE A,#00001111B,ROW_3          ; key row 3, find column
+           LJMP K2                                          ; if none ,false input ,repeat
+           
+
+
+          ROW_0:MOV DPTR,#KCODE0         ; set DPTR=start of row 0
+           SJMP FIND                                    ; find column key belongs to
+           ROW_1:MOV DPTR,#KCODE1        ; set DPTR=start of row 1
+           SJMP FIND                                    ; find column key belongs to
+           ROW_2:MOV DPTR,#KCODE2         ; set DPTR=start of row 2
+           SJMP FIND                                    ; find column key belongs to
+           ROW_3:MOV DPTR,#KCODE3         ; set DPTR=start of row 3
+          
+
+         FIND:RRC A                                         ; see if any CY bit is low
+           JNC MATCH                                         ; if zero get ASCII code
+           INC DPTR                                             ; point to next column
+           SJMP FIND                                           ; keep searching
+          
+
+        MATCH:CLR A                                     ; set A=0 (match is found)
+           MOVC A,@A+DPTR                           ; get ASCII from table
+           ACALL LCD_DATA                       ; call LCD_DATA subroutine
+           LJMP K1                                               ; long jump to K1(loop)
+
+
+
+           LCD_INITIALIZE:                        ; LCD_INITIALIZE subroutine
+           MOV A,#38H                                      ; initialize 16x2 LCD
+ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+MOV A,#0EH                                     ; display on, cursor on
+ACALL LCD_COMMAND                 ; call LCD_COMMAND subroutine
+           MOV A,#01H                                     ; clear LCD
+           ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+           MOV A,#06H                                     ; shift cursor right
+           ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+           MOV A,#80H                                    ; force cursor to the beginning of first line
+           ACALL LCD_COMMAND                ; call LCD_COMMAND subroutine
+           RET                                                   ; return from LCD_INITIALIZE subroutine
+           LCD_COMMAND:                          ; LCD_COMMAND subroutine
+           MOV P2,A                                        ; copy reg A to port 2
+           CLR P3.7                                           ; RS=0 for command
+           CLR P3.6                                           ; R/W=0 for write
+           SETB P3.5                                         ; E=1 for high pulse
+           ACALL DELAY                                   ; give LCD sometime
+           CLR P3.5                                           ; E=0 for H-to-L pulse
+           RET                                                  ; return from LCD_COMMAND subroutine
+           LCD_DATA:                                    ; LCD_DATA subroutine
+           MOV P2,A                                      ; copy reg A to port 2
+           SETB P3.7                                       ; RS=0 for command
+           CLR P3.6                                         ; R/W=0 for write
+           SETB P3.5                                       ; E=1 for high pulse
+           ACALL DELAY                                ; give LCD sometime
+           CLR P3.5                                        ; E=0 for H-to-L pulse
+           RET                                               ; return from LCD_DATA subroutine
+            DELAY:MOV R4,#40                   ; R4=40
+            HERE:MOV R5,#230                  ; R5=230
+           HERE1:DJNZ R5,HERE1             ; stay until R5 becomes 0
+DJNZ R4,HERE                           ; stay until R4 becomes 0
+RET                                              ; return from DELAY subroutine
+ORG 300H                                          ; ASCII look-up table for each row
+                       KCODE3:DB 'C','D','E','F'     ; row 3
+                       KCODE2:DB '8','9','A','B'    ; row 2
+            KCODE1:DB '4','5','6','7'                                 ; row 1
+            KCODE0:DB '0','1','2','3'                                 ; row 0
+END                                                          ; end of program
+ 
+4x2:
+
+ORG 0000H                             ; ORIGIN to load program in 0H
+SJMP START                            ;short jump to label start
+
+
+           ORG 0030H             
+           START:MOV P0,#0FFH          ; make P2 an input port
+           ACALL LCD_INITIALIZE          ; call LCD_INITIALIZE  
+           K1:MOV P1,#0                       ; ground all rows at once
+           MOV A,P0                           ; read all keys(ensure open)
+           ANL A,#00000011B               ; mask unused bits
+           CJNE A,#00000011B,K1        ; till all keys release
+         
+
+
+         K2:ACALL DELAY                     ; call 20 msec delay
+           MOV A,P0                                ; see if any key is pressed
+           ANL A,#00000011B                 ; mask unused bits
+           CJNE A,#00000011B,OVER    ; key pressed,find row
+           SJMP K2                                     ; check till key pressed
+          
+
+         OVER:ACALL DELAY                 ; wait 20 msecdebounce time
+           MOV A,P0                                  ; check key closure
+           ANL A,#00000011B                  ; mask unused bits
+           CJNE A,#00000011B,OVER1     ; key pressed,find row
+           SJMP K2                                         ; of none, keep polling
+           
+
+        OVER1:MOV P1,#11111110B     ; ground row 0
+           MOV A,P0                                      ; read all columns
+           ANL A,#00000011B                      ; mask unused bits
+           CJNE A,#00000011B,ROW_0      ; key row 0, find column
+           MOV P1,#11111101B                   ; ground row 1
+        MOV A,P0                                      ; read all columns
+        ANL A,#00000011B                      ; mask unused bits
+        CJNE A,#00000011B,ROW_1      ; key row 1, find column
+           MOV P1,#11111011B                    ; ground row 2
+           MOV A,P0                                        ; read all columns
+           ANL A,#00000011B                        ; mask unused bits
+           CJNE A,#00000011B,ROW_2        ; key row 2, find column
+           MOV P1,#11110111B                    ; ground row 3
+           MOV A,P0                                          ; read all columns
+           ANL A,#00000011B                          ; mask unused bits
+           CJNE A,#00000011B,ROW_3          ; key row 3, find column
+           LJMP K2                                          ; if none ,false input ,repeat
+           
+
+
+          ROW_0:MOV DPTR,#KCODE0         ; set DPTR=start of row 0
+           SJMP FIND                                    ; find column key belongs to
+           ROW_1:MOV DPTR,#KCODE1        ; set DPTR=start of row 1
+           SJMP FIND                                    ; find column key belongs to
+           ROW_2:MOV DPTR,#KCODE2         ; set DPTR=start of row 2
+           SJMP FIND                                    ; find column key belongs to
+           ROW_3:MOV DPTR,#KCODE3         ; set DPTR=start of row 3
+          
+
+         FIND:RRC A                                         ; see if any CY bit is low
+           JNC MATCH                                         ; if zero get ASCII code
+           INC DPTR                                             ; point to next column
+           SJMP FIND                                           ; keep searching
+          
+
+        MATCH:CLR A                                     ; set A=0 (match is found)
+           MOVC A,@A+DPTR                           ; get ASCII from table
+           ACALL LCD_DATA                       ; call LCD_DATA subroutine
+           LJMP K1                                               ; long jump to K1(loop)
+
+
+
+           LCD_INITIALIZE:                        ; LCD_INITIALIZE subroutine
+           MOV A,#38H                                      ; initialize 16x2 LCD
+ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+MOV A,#0EH                                     ; display on, cursor on
+ACALL LCD_COMMAND                 ; call LCD_COMMAND subroutine
+           MOV A,#01H                                     ; clear LCD
+           ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+           MOV A,#06H                                     ; shift cursor right
+           ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+           MOV A,#80H                                    ; force cursor to the beginning of first line
+           ACALL LCD_COMMAND                ; call LCD_COMMAND subroutine
+           RET                                                   ; return from LCD_INITIALIZE subroutine
+           LCD_COMMAND:                          ; LCD_COMMAND subroutine
+           MOV P2,A                                        ; copy reg A to port 2
+           CLR P3.7                                           ; RS=0 for command
+           CLR P3.6                                           ; R/W=0 for write
+           SETB P3.5                                         ; E=1 for high pulse
+           ACALL DELAY                                   ; give LCD sometime
+           CLR P3.5                                           ; E=0 for H-to-L pulse
+           RET                                                  ; return from LCD_COMMAND subroutine
+           LCD_DATA:                                    ; LCD_DATA subroutine
+           MOV P2,A                                      ; copy reg A to port 2
+           SETB P3.7                                       ; RS=0 for command
+           CLR P3.6                                         ; R/W=0 for write
+           SETB P3.5                                       ; E=1 for high pulse
+           ACALL DELAY                                ; give LCD sometime
+           CLR P3.5                                        ; E=0 for H-to-L pulse
+           RET                                               ; return from LCD_DATA subroutine
+            DELAY:MOV R4,#40                   ; R4=40
+            HERE:MOV R5,#230                  ; R5=230
+           HEREA:DJNZ R5,HEREA             ; stay until R5 becomes 0
+DJNZ R4,HERE                           ; stay until R4 becomes 0
+RET                                              ; return from DELAY subroutine
+ORG 300H                                          ; ASCII look-up table for each row
+                       KCODE3:DB '7','6'     ; row 3
+                       KCODE2:DB '5','4'    ; row 2
+            KCODE1:DB '3','2'                                 ; row 1
+            KCODE0:DB '0','1'                                 ; row 0
+END      
+
+
+
+
+
+
+
+
+
+
+
+
+
+2x4:
+
+ORG 0000H                             ; ORIGIN to load program in 0H
+SJMP START                            ;short jump to label start
+
+
+           ORG 0030H             
+           START:MOV P0,#0FFH          ; make P2 an input port
+           ACALL LCD_INITIALIZE          ; call LCD_INITIALIZE  
+           K1:MOV P1,#0                       ; ground all rows at once
+           MOV A,P0                           ; read all keys(ensure open)
+           ANL A,#00001111B               ; mask unused bits
+           CJNE A,#00001111B,K1        ; till all keys release
+         
+
+
+         K2:ACALL DELAY                     ; call 20 msec delay
+           MOV A,P0                                ; see if any key is pressed
+           ANL A,#00001111B                 ; mask unused bits
+           CJNE A,#00001111B,OVER    ; key pressed,find row
+           SJMP K2                                     ; check till key pressed
+          
+
+         OVER:ACALL DELAY                 ; wait 20 msecdebounce time
+           MOV A,P0                                  ; check key closure
+           ANL A,#00001111B                  ; mask unused bits
+           CJNE A,#00001111B,OVER1     ; key pressed,find row
+           SJMP K2                                         ; of none, keep polling
+           
+
+        OVER1:MOV P1,#11111110B     ; ground row 0
+           MOV A,P0                                      ; read all columns
+           ANL A,#00001111B                      ; mask unused bits
+           CJNE A,#00001111B,ROW_0      ; key row 0, find column
+           MOV P1,#11111101B                   ; ground row 1
+        MOV A,P0                                      ; read all columns
+        ANL A,#00001111B                      ; mask unused bits
+        CJNE A,#00001111B,ROW_1      ; key row 1, find column
+           LJMP K2                                          ; if none ,false input ,repeat
+           
+
+
+          ROW_0:MOV DPTR,#KCODE0         ; set DPTR=start of row 0
+           SJMP FIND                                    ; find column key belongs to
+           ROW_1:MOV DPTR,#KCODE1        ; set DPTR=start of row 1
+           SJMP FIND                                    ; find column key belongs to
+          
+
+         FIND:RRC A                                         ; see if any CY bit is low
+           JNC MATCH                                         ; if zero get ASCII code
+           INC DPTR                                             ; point to next column
+           SJMP FIND                                           ; keep searching
+          
+
+        MATCH:CLR A                                     ; set A=0 (match is found)
+           MOVC A,@A+DPTR                           ; get ASCII from table
+           ACALL LCD_DATA                       ; call LCD_DATA subroutine
+           LJMP K1                                               ; long jump to K1(loop)
+
+
+
+           LCD_INITIALIZE:                        ; LCD_INITIALIZE subroutine
+           MOV A,#38H                                      ; initialize 16x2 LCD
+ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+MOV A,#0EH                                     ; display on, cursor on
+ACALL LCD_COMMAND                 ; call LCD_COMMAND subroutine
+           MOV A,#01H                                     ; clear LCD
+           ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+           MOV A,#06H                                     ; shift cursor right
+           ACALL LCD_COMMAND                  ; call LCD_COMMAND subroutine
+           MOV A,#80H                                    ; force cursor to the beginning of first line
+           ACALL LCD_COMMAND                ; call LCD_COMMAND subroutine
+           RET                                                   ; return from LCD_INITIALIZE subroutine
+           LCD_COMMAND:                          ; LCD_COMMAND subroutine
+           MOV P2,A                                        ; copy reg A to port 2
+           CLR P3.7                                           ; RS=0 for command
+           CLR P3.6                                           ; R/W=0 for write
+           SETB P3.5                                         ; E=1 for high pulse
+           ACALL DELAY                                   ; give LCD sometime
+           CLR P3.5                                           ; E=0 for H-to-L pulse
+           RET                                                  ; return from LCD_COMMAND subroutine
+           LCD_DATA:                                    ; LCD_DATA subroutine
+           MOV P2,A                                      ; copy reg A to port 2
+           SETB P3.7                                       ; RS=0 for command
+           CLR P3.6                                         ; R/W=0 for write
+           SETB P3.5                                       ; E=1 for high pulse
+           ACALL DELAY                                ; give LCD sometime
+           CLR P3.5                                        ; E=0 for H-to-L pulse
+           RET                                               ; return from LCD_DATA subroutine
+            DELAY:MOV R4,#40                   ; R4=40
+            HERE:MOV R5,#230                  ; R5=230
+           HEREA:DJNZ R5,HEREA             ; stay until R5 becomes 0
+DJNZ R4,HERE                           ; stay until R4 becomes 0
+RET                                              ; return from DELAY subroutine
+ORG 300H                                          ; ASCII look-up table for each row
+            KCODE1:DB '4','5','6','7'                                 ; row 1
+            KCODE0:DB '0','1','2','3'                                 ; row 0
+END
+
+
+
+
+exp 9
+SAW TOOTH:
+
+ORG 0000H
+AGAIN:MOV A,#00H
+BACK:MOV P1,A
+     INC A
+     CJNE A,#0FFH,BACK
+     SJMP AGAIN
+     END
+
+TRIANGULAR:
+
+ORG 0000H
+AGAIN:MOV A,#00H
+BACK:MOV P1,A
+     INC A
+     CJNE A,#0FFH,BACK
+BACK1:MOV P1,A
+      DEC A
+      CJNE A,#00H,BACK1
+      SJMP AGAIN
+      END
+
+STAIRCASE:
+ORG 0000H
+AGAIN:MOV A,#00H
+BACK:MOV P1,A
+     ACALL DELAY
+     INC A
+     CJNE A,#0FFH,BACK
+     SJMP AGAIN
+DELAY:MOV R0,#0FFH
+BACK1:MOV R1,#0FFH
+HERE:DJNZ R1,HERE
+     DJNZ R0,BACK1
+     RET
+     END
+
