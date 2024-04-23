@@ -1,0 +1,32 @@
+//
+org 0000h
+	again: mov a,#00h
+	back: mov p1,a
+	acall delay
+	add a,#64d
+	cjne a,#0ffh,back
+	sjmp again
+	delay: mov r0,#0ffh
+	h2: mov r1,#0ah
+	h1: djnz r1,h1
+	djnz r0,h2
+	ret
+	
+	end
+
+
+;STAIRCASE THAT RESEMBLES A SAWTOOTH DUE TO VERY SMALL DELAY
+;ORG 0000H
+;AGAIN:	MOV A, #00H
+;BACK:	MOV P1, A
+;		ACALL DELAY
+;	    INC A
+;		CJNE A, #0FFH, BACK
+;		SJMP AGAIN
+;		
+;DELAY:	MOV R0, #0FFH
+;H2:		MOV R1, #0AH
+;H1:		DJNZ R1, H1
+;		DJNZ R0, H2
+;RET		
+;END
