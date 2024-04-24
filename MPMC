@@ -1226,3 +1226,159 @@ ORG 300H                                          ; ASCII look-up table for each
             KCODE1:DB '4','5','6','7'                                 ; row 1
             KCODE0:DB '0','1','2','3'                                 ; row 0
 END
+
+
+##Write a program to Read from port I and write to port 2 simaltancously  send the same G  in scrial communication at baud rate of 9600
+
+
+ORG OOOO H
+
+SIMP 0030H
+
+ORG 0030 H
+
+MOV TMOD, #20H
+
+MOV TH1, #OFDH
+
+MOV SCON, #50H
+
+MOV IE,#90H
+
+SETB TR1
+
+AGAIN:MOV A, P1
+
+MOV SBUF, A
+MOV P2,A
+
+SJMP AGAIN
+
+ORG 0023H
+
+SJMP 0050 H
+
+ORG 0050 H
+
+JB TI, TRANS
+
+MOV A, SBUF 
+CLR RI
+RET RI
+TRANS: CLR TI
+RETI
+
+##Write A program to generate a square wave OF 500us at pin p1.0.crystal frequensy supplied is 12MHz  Simultaneously Read from port 1 and write  to port 2.
+
+Code:
+
+ORG OOOOH
+SJMP 0030H
+
+
+ORG 0030H
+
+MOV TMOD, #02H
+
+MOV THO, #06H
+
+
+MOV IE, #82H
+
+SETB TRO
+
+crystal frog = temiz
+
+Again: MOV A, P1
+
+
+MOV P2, A
+
+SJMP Again
+
+ORG OOOBH
+
+CPL P1.0
+
+RET I
+
+##Write a  program using level triggring to blink LED connected to p1.2 when interrupt 1 occurs and blink LED p1.5 simultaneously
+
+ORG 0000H
+
+SJMP 0030H
+
+ORG 0030H
+
+MOV IE, #84H
+
+SETB P1.5
+
+Again: MOV RO,#OFFH
+HERE:DJNZ R0,HERE
+CPL P1.5
+SJMP Again
+
+ORG 0013H
+
+SJMP 0050H
+
+ORG OO5OH
+
+SET B P1.2
+
+MOV R1,#OFFH
+
+HERE1:DJNZ R1,HERE1
+CLR P1.2
+RET I
+
+##Write a program to send aVailability of no of seats inside a hall trough Serial communication Line Assume max seat is 50 in the Hall An IR sensor is connected at entrence door through pin P3.2.Another IR sensor connected at the exit door through pin P3.3
+
+ORG OOOOH
+
+SJMP 0030H
+
+ORG 0030H
+SETB TCON.0
+SETB TCON.2
+
+MOV TMOD, #20H
+
+MOV TH1,#OFDH 
+MOV SCON, #50H
+
+MOV IE, #95H
+MOV A,#50D
+
+SETB TR1
+
+Again: MOV SBUF, A
+
+SJMP Again
+
+ORG 0003H
+
+DEC A
+
+RET I
+
+ORG 0013H
+
+INC A
+
+RET I
+
+ORG 0023H
+
+JB TI, Trans
+
+MOV A, SBUF
+
+CLR RI
+
+RET I
+
+Trans:CLR TI
+
+RET I
