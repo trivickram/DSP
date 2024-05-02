@@ -48,3 +48,34 @@ title('Noisy signal');
 subplot(3,1,3);
 plot(t,filtered_signal);
 title('Filtered signal');
+
+%or
+
+clf;
+clc; 
+t=0:0.01:1; 
+f=5; 
+x=sin(2*pi*f*t);
+subplot(4,1,1)
+plot(t,x);
+
+y=rand(1,101) ;
+subplot(4,1,2)
+plot(t,y)
+
+z=x+y;
+subplot(4,1,3)
+plot(t,(z))
+
+
+fc = 5; % Passband edge frequency
+fs = 1000; % Sampling frequency
+Wp = 0.1;      
+Ws = 0.2;
+[N, Wn] = cheb1ord(Wp, Ws, 0.5, 30,'s');
+[b, a] = cheby1(N,0.5,Wn);
+%freqs(b, a, [], fs);
+%filtered_signal = filter(b, a, z);
+Y = filtfilt(b,a,z);
+subplot(4,1,4)
+plot(t,Y);
