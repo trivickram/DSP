@@ -1,0 +1,72 @@
+%expt7-design a suitable filter to surpass noise from ecg signal measure the efficiency of the filter
+in terms of correlation coeffecient index.
+%Theory-Designing a suitable filter to suppress noise from an ECG (Electrocardiogram) signal involves understanding the characteristics of both the ECG signal and the noise, and then selecting appropriate filtering techniques. The efficiency of the filter can be assessed using the correlation coefficient index, which measures the similarity between the filtered and original ECG signals. Here's a detailed theoretical approach:
+% Theory:
+
+1. *Characteristics of ECG Signal and Noise*:
+   - *ECG Signal*: The ECG signal represents the electrical activity of the heart and typically has low-frequency components with distinct QRS complexes.
+   - *Noise*: ECG signals are often corrupted by various types of noise, such as baseline wander, powerline interference (50/60 Hz), muscle noise (EMG), and electrode motion artifacts.
+
+2. *Filtering Techniques*:
+   - *Bandpass Filtering*: Use a bandpass filter to target the frequency range of the ECG signal (e.g., 0.5 Hz to 100 Hz) while attenuating noise outside this range.
+   - *Notch Filtering*: Employ notch filters to suppress specific frequencies of noise, such as powerline interference (e.g., 50 Hz or 60 Hz).
+   - *Adaptive Filters*: Implement adaptive filtering techniques, such as adaptive noise cancellation, to dynamically estimate and remove noise components based on input signals.
+
+3. *Filter Design and Implementation*:
+   - *FIR or IIR Filters*: Choose between Finite Impulse Response (FIR) or Infinite Impulse Response (IIR) filters based on design requirements and desired filter characteristics.
+   - *Filter Design Parameters*: Determine filter specifications including cutoff frequencies, filter order, and type (lowpass, highpass, bandpass, or notch) based on the nature of the noise and ECG signal.
+
+4. *Efficiency Measurement using Correlation Coefficient Index*:
+   - *Correlation Coefficient*: Calculate the correlation coefficient (Pearson's correlation coefficient) between the original (clean) ECG signal \( x(t) \) and the filtered ECG signal \( y(t) \).
+     \[ \text{Correlation Coefficient (R)} = \frac{\text{cov}(x(t), y(t))}{\sigma_x \sigma_y} \]
+     where \( \text{cov}(x(t), y(t)) \) is the covariance between \( x(t) \) and \( y(t) \), and \( \sigma_x \) and \( \sigma_y \) are the standard deviations of \( x(t) \) and \( y(t) \) respectively.
+   - *Interpretation*: A correlation coefficient close to 1 indicates high similarity between the original and filtered ECG signals, suggesting effective noise suppression.
+
+5. *Performance Evaluation*:
+   - *Signal-to-Noise Ratio (SNR)*: Additionally, evaluate the Signal-to-Noise Ratio (SNR) of the filtered ECG signal to quantify the noise reduction performance.
+   - *Visual Inspection*: Visually inspect the filtered ECG signal to ensure that important features (QRS complexes, P-waves, T-waves) are preserved while noise is suppressed.
+
+% Summary:
+Designing a filter to suppress noise from an ECG signal involves selecting appropriate filtering techniques (e.g., bandpass, notch, adaptive filtering), optimizing filter parameters, and assessing filter efficiency using metrics such as correlation coefficient index and SNR. The goal is to effectively remove noise while preserving the integrity of the ECG signal for accurate diagnosis and analysis. Experimental validation and testing are crucial to ensure that the designed filter meets the desired performance criteria for noise reduction.
+%code-
+clc;
+clear all;
+close all;
+
+fs = 100;
+t = (1:100)/fs;
+s1 = sin(2*pi*5*t);
+subplot(2,2,1);plot(t,s1);
+title('s1 = sin(2*pi*5*t)');
+
+s2 = sin(2*pi*15*t);
+subplot(2,2,2);plot(t,s2);
+title('s2 = sin(2*pi*15*t)');
+
+s3 = sin(2*pi*30*t);
+subplot(2,2,3);plot(t,s3);
+title('s3 = sin(2*pi*30*t)');
+
+s = s1+s2+s3;
+subplot(2,2,4);plot(t,s);
+title('s = s1+s2+s3');
+
+[b a] = ellip(4,0.1,40,[10 20]*2/fs);
+[h w] = freqz(b,a,512);
+
+figure(2);
+plot(w*fs/(2*pi),abs(h));
+title('Response of filter');
+
+sf = filter(b,a,s);
+
+figure(3);
+subplot(2,1,1);plot(sf);
+title('filtered output');
+
+s = fft(s,512);
+sf = fft(sf,512);
+p = (0:255)/256*(fs/2);
+
+subplot(2,1,2);plot(p,abs([s(1:256)' sf(1:256)']));
+title('Frequency spetrum of filtered Signal');
