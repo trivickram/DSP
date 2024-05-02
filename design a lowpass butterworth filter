@@ -1,0 +1,22 @@
+%exp5-design a lowpass butterworth filter
+clc
+clear all
+close all
+wp=2*pi*3500;
+ws=2*pi*4500;
+rp=0.5;
+rs=30;
+[n,wn]=buttord(wp,ws,rp,rs,'s');
+[z,p,k]=buttap(n);
+[b,a]=butter(n,wn,'low','s');
+z1=tf(b,a);
+figure(1);
+pzamp(z1)
+title('butterworth low pass filter');
+[h,w]=freqs(b,a);
+figure(2);
+plot(w,mag2db(abs(b)));
+grid on;
+title('butterworth low pass filter');
+ylabel('Gain in db');
+xlabel('Frequency');
