@@ -20,3 +20,21 @@ grid on;
 title('butterworth low pass filter');
 ylabel('Gain in db');
 xlabel('Frequency');
+
+%or
+
+clc
+clear all
+close all
+wp=2*pi*3500;
+ws=2*pi*4500;
+rp=0.5;
+rs=30;
+[n,wc]=buttord(wp,ws,rp,rs,'s');
+disp('order of filter');
+disp(n);
+disp('cutoff frequency');
+disp(wc);
+[b,a]=butter(n,wc,'s');
+disp(b);
+disp(a);
