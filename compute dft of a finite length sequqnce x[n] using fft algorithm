@@ -1,5 +1,41 @@
 %exp4-compute dft of a finite length sequqnce x[n] using fft algorithm for n=64,N=128,N=256
-%theory-
+%theory-dft :The Fast Fourier Transform (FFT) is an efficient algorithm for computing the Discrete Fourier Transform (DFT) of a discrete-time signal. The DFT is a fundamental operation in digital signal processing, and the FFT algorithm significantly reduces the computational complexity compared to the direct evaluation of the DFT.
+
+The Discrete Fourier Transform of a discrete-time signal x[n] of length N is defined as:
+
+X[k] = ∑_{n=0}^{N-1} x[n] * e^(-j*2*π*n*k/N)
+
+where:
+- X[k] is the DFT coefficient at frequency index k
+- x[n] is the discrete-time signal
+- N is the length of the signal
+
+The FFT algorithm exploits the inherent symmetry and periodicity of the complex exponential terms in the DFT expression to reduce the computational complexity. The most commonly used FFT algorithm is the Cooley-Tukey algorithm, which is a divide-and-conquer approach.
+
+The basic steps of the Cooley-Tukey FFT algorithm are as follows:
+
+1. Divide the input sequence of length N into two subsequences of length N/2:
+   - One subsequence contains the even-indexed samples: x[0], x[2], x[4], ..., x[N-2]
+   - The other subsequence contains the odd-indexed samples: x[1], x[3], x[5], ..., x[N-1]
+
+2. Compute the DFT of the two subsequences recursively using the FFT algorithm.
+
+3. Combine the results of the two DFTs using the following formula:
+
+   X[k] = X_even[k] + W_N^k * X_odd[k]
+   X[k+N/2] = X_even[k] - W_N^k * X_odd[k]
+
+   where:
+   - X_even[k] and X_odd[k] are the DFT coefficients of the even and odd subsequences, respectively.
+   - W_N = e^(-j*2*π/N) is the twiddle factor.
+
+This divide-and-conquer approach reduces the computational complexity from O(N^2) for the direct DFT evaluation to O(N log N) for the FFT algorithm.
+
+The FFT algorithm can be further optimized by choosing the radix (the base of the divide-and-conquer approach) and applying various techniques, such as the Radix-2 FFT, Radix-4 FFT, or mixed-radix FFT, depending on the specific requirements of the application.
+
+The efficient computation of the DFT using the FFT algorithm has numerous applications in signal processing, including digital filtering, spectral analysis, image processing, and communication systems. The availability of highly optimized FFT libraries, such as FFTW (Fastest Fourier Transform in the West) and Intel MKL (Math Kernel Library), makes the implementation of the FFT algorithm straightforward in various programming environments.
+%code-
+
 clc
 clear all;
 close all;
