@@ -1,0 +1,74 @@
+%exp3-system response and stability analysis using ztransform
+%theory-Consider the transfer function of a discrete-time LTI system:
+
+H(z) = Y(z) / X(z) = (b₀ + b₁z⁻¹ + b₂z⁻² + ... + bₙz⁻ⁿ) / (1 + a₁z⁻¹ + a₂z⁻² + ... + aₘz⁻ᵐ)
+
+where:
+
+b₀, b₁, ..., bₙ are the numerator coefficients
+a₁, a₂, ..., aₘ are the denominator coefficients
+n is the order of the numerator polynomial
+m is the order of the denominator polynomial
+The poles and zeros of the system are determined by the roots of the denominator and numerator polynomials, respectively.
+
+Poles of the system:
+
+The poles are the roots of the denominator polynomial, i.e., the values of z that satisfy the equation: 1 + a₁z⁻¹ + a₂z⁻² + ... + aₘz⁻ᵐ = 0
+Let the poles be denoted as p₁, p₂, ..., pₘ.
+The stability of the system is determined by the location of the poles in the z-plane:
+If all the poles lie inside the unit circle (|p_i| < 1), the system is stable.
+If any pole lies outside the unit circle (|p_i| > 1), the system is unstable.
+If any pole lies on the unit circle (|p_i| = 1), the system is marginally stable.
+Zeros of the system:
+
+The zeros are the roots of the numerator polynomial, i.e., the values of z that satisfy the equation: b₀ + b₁z⁻¹ + b₂z⁻² + ... + bₙz⁻ⁿ = 0
+Let the zeros be denoted as z₁, z₂, ..., zₙ.
+The zeros do not directly determine the stability of the system, but they affect the transient response and frequency characteristics of the system.
+Stability analysis using poles and zeros:
+
+The stability of the system is determined by the location of the poles in the z-plane.
+If all the poles lie within the unit circle (|p_i| < 1), the system is stable.
+If any pole lies outside the unit circle (|p_i| > 1), the system is unstable.
+If any pole lies on the unit circle (|p_i| = 1), the system is marginally stable.
+System response analysis using poles and zeros:
+
+The location of the poles and zeros in the z-plane affects the transient and steady-state responses of the system.
+Poles close to the unit circle (|p_i| ≈ 1) result in a slowly decaying transient response, while poles far from the unit circle (|p_i| ≪ 1) result in a rapidly decaying transient response.
+Zeros close to the unit circle (|z_i| ≈ 1) can cause sharp changes or peaks in the frequency response of the system.
+
+%code:
+clc;
+clear all;
+close all;
+% plotting poles & zeros
+num=input('Enter the numerator coefficients:'); %[ 0.45 0.5 0.45];
+den=input('Enter the denominator coefficients:'); % [1 -0.43 0.56];
+subplot(2,2,1);zplane(num,den);
+title('zplane');
+num_a=roots(num);
+den_b=roots(den);
+subplot(2,2,2);zplane(num_a,den_b);
+title('zplane');
+[z, p, k] = tf2zp(num,den);
+subplot(2,2,3);zplane(z,p);
+title('zplane');
+disp('The poles are:');disp(p);
+disp('The zeros are:');disp(z);
+% FACTORED FORM OF Z-TRANSFORM
+sos = zp2sos(z,p,k);
+% FINDING IMPULSE RESPONSE
+N = max(length(num),length(den));
+[g t]=impz(num,den,N+1);
+subplot(2,2,4);stem(g);
+title('Impulse Response');
+disp('Impulse response of a system is:');disp(g);
+% GETTING PARTIAL FRACTION FORM OF Z-TRANSFORM
+[r s t]=residue(num,den);
+% Z-TRANSFORM
+syms z n a;
+eq=2^n;
+ztrans_out=ztrans(eq);
+% inverse Z-transform
+inv_ztransform=iztrans(ztrans_out);
+% frequency response
+figure,freqz(num,den,'whole');
