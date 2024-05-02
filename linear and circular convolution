@@ -1,0 +1,89 @@
+#exp2
+%circular convolution
+%theory-Circular convolution, also known as cyclic convolution, is a variation of linear convolution that is particularly useful in discrete-time signal processing, especially in the context of digital signal processing (DSP) and the implementation of discrete Fourier transforms (DFT).
+
+The mathematical expression for circular convolution of two discrete-time signals x[n] and h[n] of finite length N is given by:
+
+y[n] = (x ⊗ h)[n] = ∑_{k=0}^{N-1} x[k] h[(n-k) mod N]
+
+where:
+
+n is the discrete-time index, ranging from 0 to N-1
+k is a summation index that runs from 0 to N-1
+mod N represents the modulo N operation, which ensures the indices wrap around the circular nature of the convolution.
+In contrast to linear convolution, where the summation runs from negative infinity to positive infinity, circular convolution assumes that the signals x[n] and h[n] are periodic with period N. This means that x[n] = x[n+kN] and h[n] = h[n+kN] for any integer k.
+ %code-
+clf; clear all;
+x1 = input('Input sequence1:');
+x2 = input('Input sequence2:');
+L1 = length(x1); L2 = length(x2);
+if L1 ~= L2, error('Sequences of unequal lengths'), end
+y = zeros(1,L1);
+x2tr = [x2(1) x2(L2:-1:2)];
+for k = 1:L1
+M = 1-k; x = x2tr;
+if abs(M) > length(x)
+M = rem(M,length(x));
+end
+if M < 0
+M = M + length(x);
+end
+sh = [x(M+1:length(x)) x(1:M)];
+h = x1.*sh;
+y(k) = sum(h);
+end
+out1=length(y);
+disp('Circular Convolution Output is:');disp(y);
+subplot(2,2,1);stem((0:L1-1),x1);
+xlabel('Time index n'); ylabel('Amplitude');
+title('Input Signal x(n)'); grid;
+subplot(2,2,2);stem((0:L2-1),x2);
+xlabel('Time index n'); ylabel('Amplitude');
+title('Impulse Response h(n)'); grid;
+subplot(2,2,3);stem((0:out1-1),y);
+xlabel('Time index n'); ylabel('Amplitude');
+title('Output Obtained by Convolution');grid
+-----------------------------------------------------------------------------------------------------------
+%linear convolution
+%theory-LINEAR CONVOUTION:Linear convolution is a fundamental operation in signal processing and linear systems theory. It describes how an input signal is transformed by a linear, time-invariant (LTI) system to produce an output signal. The mathematical representation of linear convolution can be expressed using the following equation:
+
+Let's consider two discrete-time signals, the input signal x[n] and the impulse response h[n] of an LTI system. The output signal y[n] is the result of the linear convolution of x[n] and h[n], which can be written as:
+
+y[n] = (x * h)[n] = ∑_{k=-∞}^{∞} x[k] h[n-k]
+
+where the symbol '*' represents the convolution operation.
+
+In the above equation:
+
+n is the discrete-time index
+k is a summation index that runs from negative infinity to positive infinity
+x[k] is the input signal at time k
+h[n-k] is the impulse response of the system at time n-k
+%code-
+x = [1, 2, 3];
+h = [0.5, 0.5];
+M = length(x);
+N = length(h);
+y_linear = zeros(1, M + N - 1);
+for n = 1:M+N-1
+    for k = max(1, n-N+1):min(n, M)
+        y_linear(n) = y_linear(n) + x(k) * h(n-k+1);
+    end
+end
+disp('Input Signal x:');
+disp(x);
+disp('Impulse Response h:');
+disp(h);
+disp('Result of Linear Convolution:');
+disp(y_linear);
+figure;
+subplot(3,1,1);
+stem(0:M-1, x, 'r', 'LineWidth', 2);
+title('Input Signal x');
+subplot(3,1,2);
+stem(0:N-1, h, 'b', 'LineWidth', 2);
+title('Impulse Response h');
+subplot(3,1,3);
+stem(0:length(y_linear)-1, y_linear, 'g', 'LineWidth', 2);
+title('Result of Linear Convolution');
+xlabel('Sample Index');
