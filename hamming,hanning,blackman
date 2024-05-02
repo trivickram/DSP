@@ -1,0 +1,55 @@
+%expt8-design a fir filter (or linear phase) using hamming,hanning&blackman window.
+%theory-Hanning Window Method:
+The Hanning window method involves designing FIR filters by applying a Hanning window function to the desired impulse response.
+
+Theory:
+
+Ideal Impulse Response: Begin with specifying the desired frequency response characteristics of the FIR filter.
+Hanning Window Function: The Hanning window is a symmetric window function that smoothly tapers to zero at both ends.
+Windowing: Multiply the desired impulse response by the Hanning window to shape the filter's characteristics.
+Frequency Response: The resulting FIR filter exhibits improved performance with reduced side lobes due to the Hanning window's properties.
+Hamming Window Method:
+Similar to the Hanning window method, the Hamming window method involves using a Hamming window function for FIR filter design.
+
+Theory:
+
+Ideal Impulse Response: Define the desired impulse response based on the filter specifications.
+Hamming Window Function: The Hamming window is another type of symmetric window function that provides good stopband attenuation.
+Windowing: Multiply the desired impulse response by the Hamming window to achieve the desired filter characteristics.
+Frequency Response: The Hamming window helps in reducing spectral leakage and achieving better performance in FIR filters.
+Blackman Window Method:
+The Blackman window method is a technique that utilizes the Blackman window function for FIR filter design.
+
+Theory:
+
+Ideal Impulse Response: Specify the desired impulse response based on the filter's requirements.
+Blackman Window Function: The Blackman window is a versatile window function with narrow main lobe and good stopband attenuation.
+Windowing: Multiply the desired impulse response by the Blackman window to shape the filter's response.
+Frequency Response: The resulting FIR filter designed using the Blackman window exhibits improved performance in terms of narrow main lobe and reduced side lobes.
+Summary:
+In summary, designing FIR filters using the Hanning, Hamming, and Blackman window methods involves selecting an appropriate window function and applying it to the desired impulse response of the filter. Each window function has unique characteristics that influence the performance of the FIR filter, such as main lobe width, side lobe levels, and stopband attenuation. These methods are widely used in digital signal processing for achieving specific filter design requirements and optimizing filter performance.
+%code-
+% Define the filter order and cutoff frequency
+filter_order = 50;
+cutoff_frequency = 0.3; % normalized frequency
+
+% Hamming window
+hamming_window = hamming(filter_order);
+hamming_filter = fir1(filter_order-1, cutoff_frequency, hamming_window);
+figure;
+freqz(hamming_filter, 1, 512);
+title('Frequency Response of FIR Filter using Hamming Window');
+
+% Hanning window
+hanning_window = hanning(filter_order);
+hanning_filter = fir1(filter_order-1, cutoff_frequency, hanning_window);
+figure;
+freqz(hanning_filter, 1, 512);
+title('Frequency Response of FIR Filter using Hanning Window');
+
+% Blackman window
+blackman_window = blackman(filter_order);
+blackman_filter = fir1(filter_order-1, cutoff_frequency, blackman_window);
+figure;
+freqz(blackman_filter, 1, 512);
+title('Frequency Response of FIR Filter using Blackman Window');
