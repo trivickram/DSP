@@ -1,0 +1,47 @@
+#exp1
+% Impulse signal
+t_impulse = -5:0.01:5;
+impulse = (t_impulse == 0);
+subplot(3, 2, 1);
+plot(t_impulse, impulse);
+title('Impulse Signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+% Unit step signal
+t_unitstep = -5:0.01:5;
+unitstep = (t_unitstep >= 0);
+subplot(3, 2, 2);
+plot(t_unitstep, unitstep);
+title('Unit Step Signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+% Ramp signal
+t_ramp = -5:0.01:5;
+ramp = t_ramp .* (t_ramp >= 0);
+subplot(3, 2, 3);
+plot(t_ramp, ramp);
+title('Ramp Signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+% Exponential signal
+t_exp = -5:0.01:5;
+exp_signal = exp(t_exp);
+subplot(3, 2, 4);
+plot(t_exp, exp_signal);
+title('Exponential Signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+% Square wave signal
+t_square = -5:0.01:5;
+square_wave = square(2*pi*t_square);
+subplot(3, 2, 5);
+plot(t_square, square_wave);
+title('Square Wave Signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+sgtitle('Basic Signals');
