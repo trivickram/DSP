@@ -1,0 +1,1174 @@
+12-01-24
+
+
+
+clear all;
+
+close all;
+
+clc;
+
+N=15;
+
+n=-N:1:N; %interval
+
+
+
+
+
+
+
+x=[zeros(1,N),ones(1,1),zeros(1,N)]; %for impulse
+
+subplot(8,1,1);
+
+plot(n,x);
+
+subplot(8,1,2);
+
+stem(n,x);
+
+
+
+
+
+
+
+subplot(8,1,3); %for sine
+
+plot(n,sin(n/2));
+
+subplot(8,1,4);
+
+stem(n,sin(n/2));
+
+
+
+
+
+
+
+m=[zeros(1,15),ones(1,16)]; %for Unit step
+
+subplot(8,1,5);
+
+plot(n,m);
+
+subplot(8,1,6);
+
+stem(n,m);
+
+
+
+
+
+
+
+t=0:00.1:1; %for ramp
+
+r=t;
+
+subplot(8,1,7);
+
+plot(t,r);
+
+subplot(8,1,8);
+
+stem(t,r);
+
+
+
+
+
+
+
+clc %exponential
+
+clear all
+
+t=-1:0.01:1;
+
+x=exp(t);
+
+subplot(2,1,1);
+
+plot(t,x);
+
+subplot(2,1,2);
+
+stem(t,x);
+
+
+
+
+
+
+
+clc %square pulse
+
+clear all
+
+t=-4:0.01:4;
+
+x=[zeros(1,2),ones(1,4),zeros(1,2)];
+
+subplot(2,1,1);
+
+plot(x);
+
+subplot(2,1,2);
+
+stem(x);
+
+ 
+
+19/01/24
+
+
+
+%Matrix Method linear convolution (manual)
+
+%Linear Convolution
+
+x=[1,2,3,1,2];
+
+h=[1,1,2,1];
+
+h1=fliplr(h);
+
+
+
+c1=(h1(4)*x(1));
+
+c2=(h1(3)*x(1))+(h1(4)*x(2));
+
+c3=(h1(2)*x(1))+(h1(3)*x(2))+(h1(4)*x(3));
+
+c4=(h1(1)*x(1))+(h1(2)*x(2))+(h1(3)*x(3))+(h1(4)*x(4));
+
+c5=(h1(1)*x(2))+(h1(2)*x(3))+(h1(3)*x(4))+(h1(4)*x(5));
+
+c6=(h1(1)*x(3))+(h1(2)*x(4))+(h1(3)*x(5));
+
+c7=(h1(1)*x(4))+(h1(2)*x(5));
+
+c8=(h1(1)*x(5));
+
+xconvh0=[c1, c2, c3, c4, c5, c6, c7, c8]; %manually
+
+disp(xconvh0);
+
+xconvh1=conv(x,h); %using inbuilt function
+
+disp(xconvh1);
+
+
+
+
+
+% Program_2.1  
+
+% Linear Convolution of signal sequences  
+
+clf;  
+
+clear all;  
+
+h = input('Input impulse response samples:');   
+
+x = input('Input samples of incoming signal:');  
+
+hlen = length(h);  
+
+xlen = length(x);  
+
+for i = 1:xlen      
+
+    for j = 1:hlen           
+
+        y(i, i+j-1) = x(i) * h(j);      
+
+    end
+
+end
+
+y = sum(y);  
+
+outl=length(y);  
+
+disp('Convolution Output is:');
+
+disp(y);  
+
+subplot(2,2,1);
+
+stem((0:xlen-1),x);  
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Input Signal x(n)'); 
+
+grid;  
+
+subplot(2,2,2);
+
+stem((0:hlen-1),h);  
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Impulse Response h(n)'); 
+
+grid;  
+
+subplot(2,2,3);
+
+stem((0:outl-1),y);  
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Output Obtained by Convolution');
+
+grid;  
+
+n=0:xlen+hlen-2;
+
+x1=[x zeros(1,hlen-1)];  
+
+y1=filter(h,1,x1);  
+
+subplot(2,2,4);stem(n,y1);   
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Output Obtained by Filtering');
+
+grid;
+
+
+
+
+
+%Program_2.2  
+
+% Circular Convolution of signal sequences  
+
+clf; 
+
+clear all;  
+
+x1 = input('Input sequence1:');
+
+x2 = input('Input sequence2:');
+
+L1 = length(x1); L2 = length(x2);  
+
+if L1 ~= L2, error('Sequences of unequal lengths'), end  
+
+y = zeros(1,L1);  x2tr = [x2(1) x2(L2:-1:2)];  
+
+for k = 1:L1      
+
+    M = 1-k; x = x2tr;  
+
+    if abs(M) > length(x)  
+
+        M = rem(M,length(x));  
+
+    end
+
+    if M < 0
+
+M = M + length(x);
+
+    end
+
+    sh = [x(M+1:length(x)) x(1:M)];
+
+    h = x1.*sh;  
+
+    y(k) = sum(h);  
+
+end
+
+out1=length(y);  
+
+disp('Circular Convolution Output is:');
+
+disp(y);  
+
+subplot(2,2,1);
+
+stem((0:L1-1),x1);  
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Input Signal x(n)'); 
+
+grid;  
+
+subplot(2,2,2);
+
+stem((0:L2-1),x2);  
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Impulse Response h(n)'); 
+
+grid;  
+
+subplot(2,2,3);
+
+stem((0:out1-1),y);  
+
+xlabel('Time index n'); 
+
+ylabel('Amplitude');  
+
+title('Output Obtained by Convolution');
+
+grid;
+
+ 
+
+02/02/24
+
+
+
+%Code we were supposed to write:
+
+clear all;
+
+close all;
+
+clc;
+
+num = input( 'Type in the numerator coefficients = ');
+
+den = input('Type in the denominator coefficients =') ;
+
+%method 1
+
+subplot(2,2,1);
+
+nr=roots(num);
+
+dr=roots(den);
+
+zplane(num,den);
+
+%method 2
+
+subplot(2,2,2);
+
+[z,p,k]=tf2zp(num,den);
+
+zplane(z,p);
+
+%impulse response
+
+subplot(2,2,3);
+
+n=max(length(num),length(den));
+
+[g,t]=impz(num,den,n+1);
+
+stem(g);
+
+
+
+less = lt(abs(p), -1);
+
+gretr = gt(abs(p), 1);
+
+rutty=abs(p);
+
+val = find(gretr == 1);
+
+ if val >= 1
+
+    flag=1;
+
+ else
+
+     flag=0;
+
+ end
+
+flag1=flag;
+
+if flag==1
+
+    fprintf('\n System is UNStable\n');  
+
+else
+
+    fprintf('\n System is Stable\n');
+
+end
+
+
+
+
+
+
+
+%Code copied from Lab Manual:
+
+% Program P5.1
+
+clc;
+
+clear all;
+
+close all;
+
+% plotting poles & zeros
+
+num=input('Enter the numerator coefficients:'); %[ 0.45 0.5 0.45];
+
+den=input('Enter the denominator coefficients:'); % [1 -0.43 0.56];
+
+subplot(2,2,1);zplane(num,den);
+
+title('zplane');
+
+num_a=roots(num);
+
+den_b=roots(den);
+
+subplot(2,2,2);zplane(num_a,den_b);
+
+title('zplane');
+
+[z, p, k] = tf2zp(num,den);
+
+subplot(2,2,3);zplane(z,p);
+
+title('zplane');
+
+disp('The poles are:');disp(p);
+
+disp('The zeros are:');disp(z);
+
+% FACTORED FORM OF Z-TRANSFORM
+
+sos = zp2sos(z,p,k);
+
+% FINDING IMPULSE RESPONSE
+
+N = max(length(num),length(den));
+
+[g t]=impz(num,den,N+1);
+
+subplot(2,2,4);stem(g);
+
+title('Impulse Response');
+
+disp('Impulse response of a system is:');disp(g);
+
+% GETTING PARTIAL FRACTION FORM OF Z-TRANSFORM
+
+[r s t]=residue(num,den);
+
+
+
+% Z-TRANSFORM
+
+syms z n a;
+
+eq=2^n;
+
+ztrans_out=ztrans(eq);
+
+% inverse Z-transform
+
+inv_ztransform=iztrans(ztrans_out);
+
+% frequency response
+
+figure,freqz(num,den,'whole');
+
+ 
+
+09/02/24
+
+
+
+%1st
+
+
+
+clc
+
+clear all
+
+n = [0:29];
+
+x = cos(2*pi*n/10);
+
+N1 = 64;
+
+N2 = 128;
+
+N3 = 256;
+
+X1 = zeros(1, N1);
+
+X2 = zeros(1, N2);
+
+X3 = zeros(1, N3);
+
+
+
+for k = 0:N1-1
+
+    X1(k+1) = abs(sum(x .* exp(-1i*2*pi*k*[0:29]/N1)));
+
+end
+
+
+
+for k = 0:N2-1
+
+    X2(k+1) = abs(sum(x .* exp(-1i*2*pi*k*[0:29]/N2)));
+
+end
+
+
+
+for k = 0:N3-1
+
+    X3(k+1) = abs(sum(x .* exp(-1i*2*pi*k*[0:29]/N3)));
+
+end
+
+
+
+F1 = [0:N1-1]/N1;
+
+F2 = [0:N2-1]/N2;
+
+F3 = [0:N3-1]/N3;
+
+
+
+subplot(3,1,1);
+
+plot(F1,X1,'-x')
+
+title('N=64')
+
+axis([0 1 0 20])
+
+
+
+subplot(3,1,2);
+
+plot(F2,X2,'-x')
+
+title('N=128')
+
+axis([0 1 0 20])
+
+
+
+subplot(3,1,3);
+
+plot(F3,X3,'-x')
+
+title('N=256')
+
+axis([0 1 0 20])
+
+
+
+
+
+
+
+
+
+
+
+%2nd
+
+clc;
+
+clear all;
+
+close all;
+
+n = [0:29];
+
+x1 = cos(2*pi*n/10);
+
+x2 = [x1 x1];
+
+x3 = [x1 x1 x1];
+
+N = 2048;
+
+X1 = zeros(1, N);
+
+X2 = zeros(1, N);
+
+X3 = zeros(1, N);
+
+for k = 0:N-1
+
+    X1(k+1) = abs(sum(x1 .* exp(-1i*2*pi*k*[0:29]/N)));
+
+    X2(k+1) = abs(sum(x2 .* exp(-1i*2*pi*k*[0:59]/N)));
+
+    X3(k+1) = abs(sum(x3 .* exp(-1i*2*pi*k*[0:89]/N)));
+
+end
+
+F = [0:N-1]/N;
+
+subplot(3,1,1)
+
+plot(F,X1), title('3 periods'), axis([0 1 0 50])
+
+subplot(3,1,2)
+
+plot(F,X2), title('6 periods'), axis([0 1 0 50])
+
+subplot(3,1,3)
+
+plot(F,X3), title('9 periods'), axis([0 1 0 50])
+
+
+
+
+
+
+
+
+
+
+
+clc;
+
+clear all;
+
+close all;
+
+n = [0:149];
+
+x1 = cos(2*pi*n/10);
+
+N = 2048;
+
+X = zeros(1, N);
+
+for k = 1:N
+
+    X(k) = abs(sum(x1 .* exp(-1i*2*pi*(k-N/2)*[0:149]/N)));
+
+end
+
+X = [X(N/2+1:end) X(1:N/2)];
+
+F = [-N/2:N/2-1]/N;
+
+plot(F, X);
+
+
+
+
+
+
+
+
+
+
+
+clc;
+
+clear all;
+
+close all;
+
+n = [0:90];
+
+x = cos(2*pi*n/10);
+
+N1 = 64;
+
+N2 = 128;
+
+N3 = 256;
+
+X1 = abs(fft(x,N1));
+
+X2 = abs(fft(x,N2));
+
+X3 = abs(fft(x,N3));
+
+F1 = [0 : N1 - 1]/N1;
+
+F2 = [0 : N2 - 1]/N2;
+
+F3 = [0 : N3 - 1]/N3;
+
+subplot(3,1,1)
+
+plot(F1,X1,'-x'),title('N = 64'),axis([0 1 0 20])
+
+subplot(3,1,2)
+
+plot(F2,X2,'-x'),title('N = 128'),axis([0 1 0 20])
+
+subplot(3,1,3)
+
+plot(F3,X3,'-x'),title('N = 256'),axis([0 1 0 20])
+
+
+
+
+
+
+
+
+
+clc
+
+clear all
+
+close all
+
+n=[0:29]
+
+n1=[0:89]
+
+x= cos(2*pi*n/10);
+
+x1= cos(2*pi*n1/10);
+
+N1=64;
+
+N2=128;
+
+N3=256;
+
+N11=32;
+
+N21=128;
+
+N31=256;
+
+X1=angle(fft(x,N1));
+
+X2=angle(fft(x,N2));
+
+X3=angle(fft(x,N3));
+
+X11=abs(fft(x1,N11));
+
+X21=abs(fft(x1,N21));
+
+X31=abs(fft(x1,N31));
+
+F1=[0:N1-1]/N1;
+
+F2=[0:N2-1]/N2;
+
+F3=[0:N3-1]/N3;
+
+F11=[0:N11-1]/N11;
+
+F21=[0:N21-1]/N21;
+
+F31=[0:N31-1]/N31;
+
+subplot(6,1,1)
+
+plot(F1,X1,'-x'),title('N1=64'),axis([0 1 0 20])
+
+subplot(6,1,2)
+
+plot(F2,X2,'-x'),title('N2=128'),axis([0 1 0 20])
+
+subplot(6,1,3)
+
+plot(F3,X3,'-x'),title('N3=256'),axis([0 1 0 20])
+
+subplot(6,1,4)
+
+plot(F11,X11,'-x'),title('N11=32'),axis([0 1 0 45])
+
+subplot(6,1,5)
+
+plot(F21,X21,'-x'),title('N21=128'),axis([0 1 0 45])
+
+subplot(6,1,6)
+
+plot(F31,X31,'-x'),title('N31=256'),axis([0 1 0 45])
+
+
+
+
+
+
+
+
+
+ 
+
+23/2/24
+
+
+
+% Program P7.1
+
+% Design of Analog Lowpass Filter
+
+clf;
+
+Fp = 3500;Fs = 4500;
+
+Wp = 2*pi*Fp; Ws = 2*pi*Fs;
+
+[N, Wn] = buttord(Wp, Ws, 0.5, 30,'s');
+
+[b,a] = butter(N, Wn, 's');
+
+wa = 0:(3*Ws)/511:3*Ws;
+
+h = freqs(b,a,wa);
+
+plot(wa/(2*pi), 20*log10(abs(h)));grid
+
+xlabel('Frequency, Hz');ylabel('Gain, dB');
+
+title('Gain response');
+
+axis([0 3*Fs -60 5]);
+
+ 
+
+
+
+1/3/24
+
+
+
+clf;
+
+clc; 
+
+t=0:0.01:1; 
+
+f=5; 
+
+x=sin(2*pi*f*t);
+
+subplot(4,1,1)
+
+plot(t,x);
+
+
+
+y=rand(1,101) ;
+
+subplot(4,1,2)
+
+plot(t,y)
+
+
+
+z=x+y;
+
+subplot(4,1,3)
+
+plot(t,(z))
+
+
+
+fc = 5; % Passband edge frequency
+
+fs = 1000; % Sampling frequency
+
+Wp = 0.1;      
+
+Ws = 0.2;
+
+[N1, Wn] = cheb1ord(Wp, Ws, 0.5, 30,'s');
+
+[b1, a1] = cheby1(N1,0.5,Wn);
+
+
+
+%freqs(b, a, [], fs);
+
+%filtered_signal = filter(b, a, z);
+
+
+
+Y1 = filtfilt(b1,a1,z);
+
+subplot(4,1,4)
+
+plot(t,Y1);
+
+ 
+
+22/03/24
+
+ecg noise removal
+
+
+
+clf;
+
+clc;
+
+t=0.01:0.01:5;
+
+      li=30/72; 
+
+      a_pwav=0.25;
+
+      d_pwav=0.09;
+
+      t_pwav=0.16;  
+
+     
+
+      a_qwav=0.025;
+
+      d_qwav=0.066;
+
+      t_qwav=0.166;
+
+      
+
+      a_qrswav=1.6;
+
+      d_qrswav=0.11;
+
+      
+
+      a_swav=0.25;
+
+      d_swav=0.066;
+
+      t_swav=0.09;
+
+      
+
+      a_twav=0.35;
+
+      d_twav=0.142;
+
+      t_twav=0.2;
+
+      
+
+      a_uwav=0.035;
+
+      d_uwav=0.0476;
+
+      t_uwav=0.433;
+
+      
+
+      
+
+       a_pwav=0.25;
+
+       d_pwav=0.09;
+
+       t_pwav=0.16;
+
+       d=0;
+
+       
+
+        a_qwav=0.025;
+
+        d_qwav=0.066;
+
+        t_qwav=0.166;
+
+        
+
+        a_qrswav=1.6;
+
+        d_qrswav=0.11;
+
+        
+
+        a_swav=0.25;
+
+        d_swav=0.066;
+
+        t_swav=0.09;
+
+        
+
+        a_twav=0.35;
+
+        d_twav=0.142;
+
+        t_twav=0.2;        
+
+        
+
+        a_uwav=0.035;
+
+        d_uwav=0.0476;
+
+        t_uwav=0.433;
+
+      
+
+ pwav=p_wav(t,a_pwav,d_pwav,t_pwav,li);
+
+ qwav=q_wav(t,a_qwav,d_qwav,t_qwav,li);
+
+ qrswav=qrs_wav(t,a_qrswav,d_qrswav,li);
+
+ swav=s_wav(t,a_swav,d_swav,t_swav,li);
+
+ twav=t_wav(t,a_twav,d_twav,t_twav,li);
+
+ uwav=u_wav(t,a_uwav,d_uwav,t_uwav,li);
+
+ %ecg output
+
+ ecg=pwav+qrswav+twav+swav+qwav+uwav;
+
+ subplot(4,1,1);
+
+ plot(t,ecg);
+
+ 
+
+ y=rand(1,500);
+
+ subplot(4,1,2);
+
+ plot(t,y)
+
+ 
+
+ z=ecg+y;
+
+ subplot(4,1,3);
+
+ plot(t,z);
+
+ 
+
+ fc=75;
+
+ fs=10000000000000000000000000000000;
+
+ wp=0.1555;
+
+ ws=0.9999999999999999999999;
+
+ [N,wn]=cheb1ord(wp,ws,0.6,30,'s');
+
+ [b,a]=cheby1(N,0.5,wn);
+
+ Q=filtfilt(b,a,z);
+
+ subplot(4,1,4);
+
+ plot(t,Q)
+
+ 
+
+ rho=corr(ecg',Q');
+
+ rho
+
+ 
+
+12-04-24
+
+(done on 26-04-24)
+
+
+
+% Program P8.2
+
+clc;clear all; close all;
+
+% Design of a FIR lowpass filter using hamming window
+
+Fp=2000; Fs=2500; 
+
+dp=0.005; 
+
+ds=0.005; 
+
+FT=10000;
+
+% Estimate the Filter Order
+
+N = 26; % kaiserord(Fp, Fs, dp, ds, FT);
+
+% Design the Filter
+
+[num,den] = fir1(N,2250/10000,blackman(N+1));
+
+[num1,den1] = fir1(N,2250/10000,hanning(N+1));
+
+[num2,den2] = fir1(N,2250/10000,hamming(N+1));
+
+[num3,den3] = fir1(N,2250/10000,chebwin(N+1));
+
+% Display the transfer function
+
+% disp('Numerator coefficients are ');disp(num);
+
+% disp('Denominator coefficients are ');disp(den);
+
+% Compute the gain response
+
+w = 0:pi/511:pi;
+
+h = freqz(num,den,w);
+
+g = 20*log10(abs(h));
+
+h1 = freqz(num1,den1,w);
+
+g1 = 20*log10(abs(h1));
+
+h2 = freqz(num2,den2,w);
+
+g2 = 20*log10(abs(h2));
+
+h3 = freqz(num3,den3,w);
+
+g3 = 20*log10(abs(h3));
+
+% Plot the gain response
+
+plot(w/pi,g,w/pi,g1,w/pi,g2,w/pi,g3,'linewidth',2);grid
+
+legend('blackman','hanning','hamming','chebwin');
+
+xlabel('\omega /\pi'); ylabel('Gain, dB');
+
+title('Gain Response of a FIR lowpass filter with different windows');
+
+% figure, freqz(num,den,w)
+
